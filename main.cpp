@@ -25,6 +25,7 @@ int main() {
 	int M;
 	int N;
 	int num;
+	int time_1 = 0;
 	cout << "Введите вероятность регистрового способа адресации 2 операнда P1 (0.9, 0.8, 0.6): ";
 	cin >> P1;
 	cout << "Введите время доступа к памяти N (2, 5, 10): ";
@@ -44,7 +45,7 @@ int main() {
 	for (int i = 0; i < num; i++) {
 		Command create;
 		create.create(P1, P2);
-		create.setQueue(0);
+		create.setQueue(i);
 		list[i] = create;
 	}
 	for (int i = 0; i < num; i++) {
@@ -63,8 +64,6 @@ int main() {
 		flag_read = 0;
 		flag_1oper = 0;
 		for (int i = 0; i < num; i++) {
-			
-
 			if (list[i].getQueue() != 0) {
 				list[i].setQueue((list[i].getQueue()) - 1);
 				continue;
@@ -88,10 +87,69 @@ int main() {
 				else if ((list[i].getStypen() == 1) && (flag_1oper != 0)){
 					list[i].addTime(1);
 				}
-				else { list[i].setStypen(list[i].getStypen() + 1); }
+
+				else if ((list[i].getStypen() == 2) && (flag_2oper == 0) && (list[i].getOper2() == 1)) {
+					list[i].setStypen(list[i].getStypen() + 1);
+					list[i].addTime(1);
+					flag_2oper = 1;
+				}
+
+				else if ((list[i].getStypen() == 2) && (flag_2oper == 0) && (list[i].getOper2() == 2)) {
+					list[i].setStypen(list[i].getStypen() + 1);
+					list[i].addTime(N);
+					list[i].setQueue(N-1);
+					flag_2oper = N;
+				}
+				else if ((list[i].getStypen() == 2) && (flag_2oper != 0)) {
+					list[i].addTime(1);
+				}
+
+				//ступень вычисления результата
+				else if ((list[i].getStypen() == 3) && (flag_result == 0) && (list[i].getType() == 1)) {
+					list[i].setStypen(list[i].getStypen() + 1);
+					list[i].addTime(1);
+					flag_result = 1;
+				}
+
+				else if ((list[i].getStypen() == 3) && (flag_result == 0) && (list[i].getType() == 2)) {
+					list[i].setStypen(list[i].getStypen() + 1);
+					list[i].addTime(M);
+					list[i].setQueue(M-1);
+					flag_result = M;
+				}
+				else if ((list[i].getStypen() == 3) && (flag_result != 0)) {
+					list[i].addTime(1);
+				}
+				
+				//Ступень записи
+				else if ((list[i].getStypen() == 4) && (flag_write == 0) && (list[i].getOper2() == 1)) {
+					list[i].setStypen(list[i].getStypen() + 1);
+					list[i].addTime(1);
+					flag_write = 1;
+				}
+
+				else if ((list[i].getStypen() == 4) && (flag_write == 0) && (list[i].getOper2() == 2)) {
+					list[i].setStypen(list[i].getStypen() + 1);
+					list[i].addTime(N);
+					list[i].setQueue(N - 1);
+					flag_write = N;
+				}
+				else if ((list[i].getStypen() == 4) && (flag_write != 0)) {
+					list[i].addTime(1);
+				}
+				/*else { list[i].setStypen(list[i].getStypen() + 1); };*/
 			}
 		}
+		if (flag_2oper > 0){ flag_2oper--; }
+		if (flag_result > 0) { flag_result--; }
+		if (flag_write > 0) { flag_write--; }
+		
 	}
+	for (int i = 0; i < num; i++) {
+		time_1 += list[i].getTime();
+	}
+	cout << "Среднее время выполнения команды: " << time_1 / num << endl;
+	cout << "------" << endl;
 	for (int i = 0; i < num; i++) {
 		list[i].print_info();
 		cout << "------" << endl;
