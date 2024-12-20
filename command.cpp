@@ -1,5 +1,6 @@
 #include "command.h"
 #include <stdlib.h>
+
 #include <iostream>
 using namespace std;
 Command::Command(const Command& com) {
@@ -8,6 +9,7 @@ Command::Command(const Command& com) {
 	time = 0;
 	num_stypen = 0;
 	queue = 0;
+	print_b = com.print_b;
 }
 
 Command::Command() {
@@ -16,17 +18,23 @@ Command::Command() {
 	this->type = 0;
 	this->num_stypen = 0;
 	this->queue = 0;
+	this->print_b = "";
 }
 
-Command::Command(int time, int oper2, int type, int stypen, int queue) {
+Command::Command(int time, int oper2, int type, int stypen, int queue, string print_b) {
 	this->time = time;
 	this->oper2 = oper2;
 	this->type = type;
 	this->num_stypen = stypen;
 	this->queue = queue;
+	this->print_b = print_b;
 }
 
 Command::~Command() {};
+
+void Command::setPrint(string print_b) {
+	this->print_b = print_b;
+}
 
 void Command::setTime(int time) {
 	this->time = time;
@@ -46,6 +54,10 @@ void Command::setType(int type) {
 
 void Command::setStypen(int stypen) {
 	this->num_stypen = stypen;
+}
+
+string Command::getPrint() const {
+	return this->print_b;
 }
 
 int Command::getQueue() const {
@@ -84,16 +96,25 @@ void Command::create(double P1, double P2) {
 	time = 0;
 	queue = 0;
 	num_stypen = 0;
+	print_b = "";
 }
 
 void Command::print_info() const{
-	cout << "Адресация: " << oper2 << endl;
-	cout << "Тип команды: " << type << endl;
-	cout << "Время: " << time << endl;
-	cout << "Номер ступени: " << num_stypen << endl;
-	cout << "В очереди: " << queue << endl;
+	cout << "Type of address: " << oper2 << endl;
+	cout << "Type of command: " << type << endl;
+	cout << "Time: " << time << endl;
+	cout << "Step number: " << num_stypen << endl;
+	cout << "Queue number: " << queue << endl;
 }
 
 void Command::addTime(int time) {
 	this->time += time;
+}
+
+void Command::addPrint(string add) {
+	this->print_b += add;
+}
+
+void Command::printBeaut() const {
+	cout << this->print_b << endl;
 }
